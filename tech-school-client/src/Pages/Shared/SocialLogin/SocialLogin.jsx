@@ -1,9 +1,8 @@
-import { useContext } from "react";
 import toast from "react-hot-toast";
-import { AuthContext } from "../../../Contexts/AuthProvider";
+import useAuth from "../../../Hooks/useAuth/useAuth";
 
 const SocialLogin = () => {
-    const { googleSignIn } = useContext(AuthContext);
+    const { googleSignIn } = useAuth();
 
     const handleGoogleSignIn = () => {
         googleSignIn()

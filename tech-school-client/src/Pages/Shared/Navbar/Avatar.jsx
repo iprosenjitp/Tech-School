@@ -1,9 +1,8 @@
-import { useContext } from "react";
-import { AuthContext } from "../../../Contexts/AuthProvider";
 import avatarImg from "../../../assets/avatar/avatar.jpg";
+import useAuth from "../../../Hooks/useAuth/useAuth";
 
 const Avatar = () => {
-    const { user } = useContext(AuthContext);
+    const { user } = useAuth();
 
     return (
         <>

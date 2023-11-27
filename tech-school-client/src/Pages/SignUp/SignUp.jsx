@@ -1,34 +1,45 @@
-import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../../Contexts/AuthProvider';
 import toast from 'react-hot-toast';
 import SocialLogin from '../Shared/SocialLogin/SocialLogin';
+import useAuth from '../../Hooks/useAuth/useAuth';
 
 const SignUp = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
-    const { createUser, updateUser } = useContext(AuthContext);
-    const [signUpError, setSignUpError] = useState('');
+    const { createUser, updateUser } = useAuth();
+
     const handleLogin = data => {
-        console.log(data);
-        setSignUpError('');
-        createUser(data.email, data.password)
-            .then(result => {
-                const user = result.user;
-                console.log(user);
-                toast('Registration Done Successfully');
-                const userInfo = {
-                    displayName: data.name
-                }
-                updateUser(userInfo)
-                    .then(() => { })
-                    .catch(error => console.log(error))
+        const { email, name, password } = data || {};
+
+        createUser(email, password)
+            .then(() => {
+                updateUser(name)
+                    .then(() => {
+                        const saveUser = { email, name }
+
+                        fetch("http://localhost:5000/users", {
+                            method: "POST",
+                            headers: {
+                                "content-type": "application/json"
+                            },
+                            body: JSON.stringify(saveUser),
+                        })
+                            .then(res => res.json())
+                            .then(data => {
+                                // if(data.insertedID)
+                                toast.success("Successfully registration done");
+                                console.log(data);
+                            })
+                    })
+                    .catch(error => {
+                        toast.error(error.message);
+                    })
             })
             .catch(error => {
-                console.log(error);
-                setSignUpError(error.message);
+                toast.error(error.message);
             });
     }
+
     return (
         <div className='h-[500px] flex justify-center items-center'>
             <div className='w-96 p-7'>
@@ -78,13 +89,7 @@ const SignUp = () => {
                         {errors.password && <p className='text-red-600'>{errors.password?.message}</p>}
                     </div>
                     <input className='btn btn-accent w-full' value="Sign Up" type="submit" />
-                    <div>
-                        {signUpError &&
-                            <p className=' text-red-600'>
-                                {signUpError}
-                            </p>
-                        }
-                    </div>
+
                 </form>
                 <p>Already have an account <Link className='text-primary' to="/login">Please Login</Link></p>
                 <div className="divider">OR</div>

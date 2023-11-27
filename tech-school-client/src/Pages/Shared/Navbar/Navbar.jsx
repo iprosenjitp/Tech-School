@@ -1,10 +1,9 @@
-import { useContext } from 'react';
 import { Link } from 'react-router-dom'
-import { AuthContext } from '../../../Contexts/AuthProvider';
 import Avatar from './Avatar';
+import useAuth from '../../../Hooks/useAuth/useAuth';
 
 const Navbar = () => {
-    const { user, logOut } = useContext(AuthContext);
+    const { user, logOut } = useAuth();
 
     const handleLogOut = () => {
         logOut()
@@ -48,7 +47,7 @@ const Navbar = () => {
                         </label>
                         <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                             <li><Link to="">Profile</Link></li>
-                            <li><Link to="">Settings</Link></li>
+                            <li><Link to="/dashboard">Dashboard</Link></li>
                             <li><Link to="" onClick={handleLogOut}>Logout</Link></li>
                         </ul>
                     </div>

@@ -1,12 +1,12 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../Contexts/AuthProvider';
 import SocialLogin from '../Shared/SocialLogin/SocialLogin';
+import useAuth from '../../Hooks/useAuth/useAuth';
 
 const Login = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
-    const { signIn } = useContext(AuthContext);
+    const { signIn } = useAuth();
     const [loginError, setLoginError] = useState('');
     const location = useLocation();
     const navigate = useNavigate();
