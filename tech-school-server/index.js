@@ -1,11 +1,33 @@
 const express = require('express')
 const cors = require('cors')
+require('dotenv').config()
+const jwt = require('jsonwebtoken');
 const app = express()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000
 
+// Middleware
 app.use(cors());
 app.use(express.json());
+
+const verifyJWT = (req, res, next) => {
+    const authorization = req.headers.authorization
+
+    if (!authorization) {
+        return res.status(401).send({ error: true, message: "Unauthorized access" })
+    }
+
+    const token = authorization.split(" ")[1]
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(401).send({ error: true, message: "Unauthorized access" })
+        }
+
+        req.decoded = decoded;
+        next();
+    })
+}
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
@@ -36,6 +58,28 @@ async function run() {
         const techSchoolDB = client.db("techSchoolDB");
         const usersCollection = techSchoolDB.collection("users");
 
+        app.post("/jwt", (req, res) => {
+            const user = req.body;
+
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+                expiresIn: "1h"
+            })
+
+            res.send({ token });
+        })
+
+        app.get("/users", async (req, res) => {
+            const result = await usersCollection.find().toArray();
+            res.send(result);
+        })
+
+        app.get("/users/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await usersCollection.findOne(query);
+            res.send(result);
+        })
+
         app.post("/users", async (req, res) => {
             const user = req.body;
             const query = { email: user.email };
@@ -49,10 +93,45 @@ async function run() {
             }
         })
 
-        app.get("/users", async (req, res) => {
-            const result = await usersCollection.find().toArray()
+        app.patch("/users/learner/:id", verifyJWT, async (req, res) => {
+            const query = { _id: new ObjectId(req.params.id) };
+
+            const updateDoc = {
+                $set: {
+                    role: "learner",
+                }
+            }
+
+            const result = await usersCollection.updateOne(query, updateDoc)
             res.send(result);
         })
+
+        app.patch("/users/instructor/:id", verifyJWT, async (req, res) => {
+            const query = { _id: new ObjectId(req.params.id) };
+
+            const updateDoc = {
+                $set: {
+                    role: "instructor",
+                }
+            }
+
+            const result = await usersCollection.updateOne(query, updateDoc)
+            res.send(result);
+        })
+
+        app.patch("/users/admin/:id", verifyJWT, async (req, res) => {
+            const query = { _id: new ObjectId(req.params.id) };
+
+            const updateDoc = {
+                $set: {
+                    role: "admin",
+                }
+            }
+
+            const result = await usersCollection.updateOne(query, updateDoc)
+            res.send(result);
+        })
+
 
     } finally {
         // Ensures that the client will close when you finish/error

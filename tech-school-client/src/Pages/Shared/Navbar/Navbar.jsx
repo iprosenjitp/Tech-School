@@ -30,7 +30,7 @@ const Navbar = () => {
                         {menuItems}
                     </ul>
                 </div>
-                <a className="btn btn-ghost text-xl">Tech School</a>
+                <Link to="/" className="btn btn-ghost text-xl">Tech School</Link>
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
@@ -46,7 +46,7 @@ const Navbar = () => {
                             </div>
                         </label>
                         <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                            <li><Link to="">Profile</Link></li>
+                            <li><Link to="/user-profile">Profile</Link></li>
                             <li><Link to="/dashboard">Dashboard</Link></li>
                             <li><Link to="" onClick={handleLogOut}>Logout</Link></li>
                         </ul>

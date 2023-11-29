@@ -1,29 +1,28 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import SocialLogin from '../Shared/SocialLogin/SocialLogin';
 import useAuth from '../../Hooks/useAuth/useAuth';
+import toast from 'react-hot-toast';
 
 const Login = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
     const { signIn } = useAuth();
-    const [loginError, setLoginError] = useState('');
+
     const location = useLocation();
     const navigate = useNavigate();
+
     const from = location.state?.form?.pathname || '/';
 
     const handleLogin = data => {
-        console.log(data);
-        setLoginError('');
-        signIn(data.email, data.password)
-            .then(result => {
-                const user = result.user;
-                console.log(user);
+        const { email, password } = data || {};
+
+        signIn(email, password)
+            .then(() => {
+                toast.success("Successfully login");
                 navigate(from, { replace: true });
             })
             .catch(error => {
-                console.log(error.message);
-                setLoginError(error.message);
+                toast.error(error.message);
             });
     }
 
@@ -60,13 +59,7 @@ const Login = () => {
                         {errors.password && <p className='text-red-600'>{errors.password?.message}</p>}
                     </div>
                     <input className='btn btn-accent w-full' value="Login" type="submit" />
-                    <div>
-                        {loginError &&
-                            <p className=' text-red-600'>
-                                {loginError}
-                            </p>
-                        }
-                    </div>
+
                 </form>
                 <p>New to Tech School <Link className='text-primary' to="/signup">Create New Account</Link></p>
                 <div className="divider">OR</div>

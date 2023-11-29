@@ -1,23 +1,28 @@
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import SocialLogin from '../Shared/SocialLogin/SocialLogin';
 import useAuth from '../../Hooks/useAuth/useAuth';
 
 const SignUp = () => {
-    const { register, formState: { errors }, handleSubmit } = useForm();
+    const { register, formState: { errors }, handleSubmit, reset } = useForm();
     const { createUser, updateUser } = useAuth();
 
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const from = location.state?.from?.pathname || "/";
+
     const handleLogin = data => {
-        const { email, name, password } = data || {};
+        const { email, name, password, role } = data || {};
 
         createUser(email, password)
             .then(() => {
                 updateUser(name)
                     .then(() => {
-                        const saveUser = { email, name }
+                        const saveUser = { email, name, role }
 
-                        fetch("http://localhost:5000/users", {
+                        fetch(`${import.meta.env.VITE_API_URL}/users`, {
                             method: "POST",
                             headers: {
                                 "content-type": "application/json"
@@ -26,9 +31,11 @@ const SignUp = () => {
                         })
                             .then(res => res.json())
                             .then(data => {
-                                // if(data.insertedID)
-                                toast.success("Successfully registration done");
-                                console.log(data);
+                                if (data.insertedID) {
+                                    reset();
+                                    toast.success("Successfully registration done");
+                                    navigate(from, { replace: true });
+                                }
                             })
                     })
                     .catch(error => {
@@ -88,6 +95,13 @@ const SignUp = () => {
                         </label>
                         {errors.password && <p className='text-red-600'>{errors.password?.message}</p>}
                     </div>
+
+                    {/* Default Value Start*/}
+
+                    <input className=' hidden' defaultValue="learner" {...register("role")} />
+
+                    {/* Default Value End */}
+
                     <input className='btn btn-accent w-full' value="Sign Up" type="submit" />
 
                 </form>
