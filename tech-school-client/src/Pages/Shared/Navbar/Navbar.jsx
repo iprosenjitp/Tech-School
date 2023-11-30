@@ -1,9 +1,21 @@
 import { Link } from 'react-router-dom'
 import Avatar from './Avatar';
 import useAuth from '../../../Hooks/useAuth/useAuth';
+// import useAxiosSecure from '../../../Hooks/useAxios/useAxiosSecure';
+// import { useQuery } from '@tanstack/react-query';
 
 const Navbar = () => {
     const { user, logOut } = useAuth();
+
+    // const [axiosSecure] = useAxiosSecure();
+    // const { data: users = [] } = useQuery({
+    //     queryKey: ["users"],
+    //     queryFn: async () => {
+    //         const res = await axiosSecure.get("/users");
+    //         return res.data;
+    //     }
+    // });
+    // const currentUser = users.find(userInfo => userInfo?.email === user?.email)
 
     const handleLogOut = () => {
         logOut()
@@ -46,6 +58,7 @@ const Navbar = () => {
                             </div>
                         </label>
                         <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                            {/* <li><Link to={`/user-profile/${currentUser?._id}`}>Profile</Link></li> */}
                             <li><Link to="/user-profile">Profile</Link></li>
                             <li><Link to="/dashboard">Dashboard</Link></li>
                             <li><Link to="" onClick={handleLogOut}>Logout</Link></li>

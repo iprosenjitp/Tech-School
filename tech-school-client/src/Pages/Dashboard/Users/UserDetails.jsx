@@ -2,14 +2,20 @@ import { useParams } from "react-router-dom";
 import Avatar from "../../Shared/Navbar/Avatar";
 import useAxiosSecure from "../../../Hooks/useAxios/useAxiosSecure";
 import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 const UserDetails = () => {
     const [axiosSecure] = useAxiosSecure();
 
     const { id } = useParams();
 
-    const [userInfo, setUserInfo] = useState({});
+    const { data: userInfo, refetch } = useQuery({
+        queryKey: ["users"],
+        queryFn: async () => {
+            const res = await axiosSecure.get(`/users/${id}`);
+            return res.data;
+        }
+    });
 
     const { name, email, role, gender, bio, currCity, currStudy, phone } = userInfo || {};
 
@@ -17,6 +23,7 @@ const UserDetails = () => {
         axiosSecure.patch(`${import.meta.env.VITE_API_URL}/users/learner/${userInfo?._id}`)
             .then((data) => {
                 if (data.data.modifiedCount > 0) {
+                    refetch();
                     toast.success(`${name} is Learner Now!!!`);
                 }
             });
@@ -26,6 +33,7 @@ const UserDetails = () => {
         axiosSecure.patch(`${import.meta.env.VITE_API_URL}/users/instructor/${userInfo?._id}`)
             .then((data) => {
                 if (data.data.modifiedCount > 0) {
+                    refetch();
                     toast.success(`${name} is Instructor Now!!!`);
                 }
             });
@@ -35,20 +43,11 @@ const UserDetails = () => {
         axiosSecure.patch(`${import.meta.env.VITE_API_URL}/users/admin/${userInfo?._id}`)
             .then((data) => {
                 if (data.data.modifiedCount > 0) {
+                    refetch();
                     toast.success(`${name} is Admin Now!!!`);
                 }
             });
     }
-
-    useEffect(() => {
-        fetch(`${import.meta.env.VITE_API_URL}/users/${id}`)
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-                setUserInfo(data);
-            })
-    }, [id, handleMakeAdmin, handleMakeInstructor, handleMakeLearner]);
-
 
     return (
         <div className=" p-5 mx-40 flex flex-col justify-center items-center border">

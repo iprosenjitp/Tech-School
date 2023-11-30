@@ -8,6 +8,7 @@ import Users from "../../Pages/Dashboard/Users/Users";
 import UserProfile from "../../Pages/UserProfile/UserProfile";
 import PrivateRoute from "../PrivateRoute/PrivateRoute";
 import UserDetails from "../../Pages/Dashboard/Users/UserDetails";
+import UpdateUserProfile from "../../Pages/UserProfile/UpdateUserProfile";
 
 const router = createBrowserRouter([
     {
@@ -29,7 +30,12 @@ const router = createBrowserRouter([
             {
                 path: '/user-profile',
                 element: <UserProfile></UserProfile>
-            }
+            },
+            {
+                path: '/update-profile/:id',
+                element: <UpdateUserProfile></UpdateUserProfile>,
+                loader: ({ params }) => fetch(`${import.meta.env.VITE_API_URL}/users/${params.id}`)
+            },
         ]
     },
     {
