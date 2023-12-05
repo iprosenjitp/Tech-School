@@ -21,7 +21,7 @@ const UserProfile = () => {
 
     const currentUser = users.find(userInfo => userInfo?.email === user?.email);
 
-    const { _id, name, email, role, gender, bio, currCity, currStudy, phone } = currentUser || {};
+    const { _id, name, email, role, gender, biography, currCity, institution, phone } = currentUser || {};
 
     return (
         <div className=" p-5 mx-40 flex flex-col justify-center items-center border">
@@ -36,10 +36,10 @@ const UserProfile = () => {
             </div>
 
             {
-                bio &&
+                biography &&
                 <div className=" mt-5 w-96">
                     <p>
-                        {bio}
+                        {biography}
                     </p>
                 </div>
             }
@@ -53,9 +53,9 @@ const UserProfile = () => {
                         </div>
                     }
                     {
-                        currStudy &&
+                        institution &&
                         <div>
-                            <h2>{currStudy}</h2>
+                            <h2>{institution}</h2>
                         </div>
                     }
                     <div>

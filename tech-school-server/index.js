@@ -132,6 +132,26 @@ async function run() {
             res.send(result);
         })
 
+        app.put("/users/:id", verifyJWT, async (req, res) => {
+            const user = req.body;
+            console.log(user);
+            const query = { _id: new ObjectId(req.params.id) };
+
+            const updateDoc = {
+                $set: {
+                    name: user?.name,
+                    phone: user?.phone || "",
+                    biography: user?.biography || "",
+                    gender: user?.gender || "",
+                    institution: user?.institution || "",
+                    linkedIn: user?.linkedIn || ""
+                }
+            }
+
+            const result = await usersCollection.updateOne(query, updateDoc)
+            res.send(result);
+        })
+
 
     } finally {
         // Ensures that the client will close when you finish/error
