@@ -1,22 +1,14 @@
 import { Link } from 'react-router-dom'
 import Avatar from './Avatar';
 import useAuth from '../../../Hooks/useAuth/useAuth';
-// import useAxiosSecure from '../../../Hooks/useAxios/useAxiosSecure';
-// import { useQuery } from '@tanstack/react-query';
+import useCurrUser from '../../../Hooks/useCurrUser/useCurrUser';
 
 const Navbar = () => {
     const { user, logOut } = useAuth();
+    // console.log(user);
+    const [{ profilePicture }] = useCurrUser();
 
-    // const [axiosSecure] = useAxiosSecure();
-    // const { data: users = [] } = useQuery({
-    //     queryKey: ["users"],
-    //     queryFn: async () => {
-    //         const res = await axiosSecure.get("/users");
-    //         return res.data;
-    //     }
-    // });
-    // const currentUser = users.find(userInfo => userInfo?.email === user?.email)
-
+    // console.log(currUserInfo);
     const handleLogOut = () => {
         logOut()
             .then(() => { })
@@ -54,7 +46,10 @@ const Navbar = () => {
                     <div className="dropdown dropdown-end">
                         <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                             <div className="w-8 h-8 rounded-full">
-                                <Avatar></Avatar>
+
+                                {
+                                    profilePicture ? <img src={profilePicture} alt="" className="w-full object-cover" /> : <Avatar></Avatar>
+                                }
                             </div>
                         </label>
                         <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">

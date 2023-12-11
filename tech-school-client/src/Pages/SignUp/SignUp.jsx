@@ -14,6 +14,7 @@ const SignUp = () => {
     const from = location.state?.from?.pathname || "/";
 
     const handleSignUp = data => {
+        data.photo = null;
         const { email, name, password, role } = data || {};
 
         createUser(email, password)

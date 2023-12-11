@@ -1,15 +1,14 @@
-import useAxiosSecure from "../../../Hooks/useAxios/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
-import UserRow from "./UserRow";
+import useAxiosSecure from "../../../Hooks/useAxios/useAxiosSecure";
+import CourseRow from "./CourseRow";
 
-
-const Users = () => {
+const Courses = () => {
     const [axiosSecure] = useAxiosSecure();
 
-    const { data: users = [] } = useQuery({
-        queryKey: ["users"],
+    const { data: courses = [] } = useQuery({
+        queryKey: ["courses"],
         queryFn: async () => {
-            const res = await axiosSecure.get("/users");
+            const res = await axiosSecure.get("/courses");
             return res.data;
         }
     });
@@ -22,20 +21,20 @@ const Users = () => {
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
+                            <th>Course Name</th>
+                            <th>Batch No</th>
+                            <th>Instructor</th>
                         </tr>
                     </thead>
                     <tbody>
                         {/* row 1 */}
                         {
-                            users.map((user, idx) => (
-                                <UserRow
-                                    key={user._id}
-                                    user={user}
+                            courses.map((course, idx) => (
+                                <CourseRow
+                                    key={course._id}
+                                    course={course}
                                     idx={idx}
-                                ></UserRow>
+                                ></CourseRow>
                             ))
                         }
                     </tbody>
@@ -47,4 +46,4 @@ const Users = () => {
     );
 };
 
-export default Users;
+export default Courses;

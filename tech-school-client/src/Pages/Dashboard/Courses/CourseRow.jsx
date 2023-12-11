@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
-import avatarImg from "../../../assets/avatar/avatar.jpg";
 
-const UserRow = ({ user, idx }) => {
+const CourseRow = ({ course, idx }) => {
     return (
         <tr>
             <th>
@@ -10,26 +9,26 @@ const UserRow = ({ user, idx }) => {
             <td>
                 <div className="flex items-center gap-3">
                     <div className="avatar">
-                        <div className="mask mask-squircle w-12 h-12">
-                            <img src={user?.profilePicture || avatarImg} alt="" />
+                        <div className=" w-40 h-20 rounded">
+                            <img src={course?.courseBanner} alt="" />
                         </div>
                     </div>
                     <div>
-                        <div className="font-bold">{user?.name}</div>
+                        <div className="font-bold">{course?.courseName}</div>
                     </div>
                 </div>
             </td>
             <td>
-                {user?.email}
+                {course?.batchNumber}
             </td>
             <td className=" capitalize">
-                {user?.role}
+                {course?.selectedInstructor}
             </td>
             <th>
-                <Link to={`/dashboard/user-details/${user._id}`} className="btn btn-ghost btn-xs">Details</Link>
+                <Link to={""} className="btn btn-ghost btn-xs">Details</Link>
             </th>
         </tr>
     );
 };
 
-export default UserRow;
+export default CourseRow;

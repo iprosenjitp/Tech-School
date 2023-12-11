@@ -9,6 +9,8 @@ import UserProfile from "../../Pages/UserProfile/UserProfile";
 import PrivateRoute from "../PrivateRoute/PrivateRoute";
 import UserDetails from "../../Pages/Dashboard/Users/UserDetails";
 import UpdateUserProfile from "../../Pages/UserProfile/UpdateUserProfile";
+import CreateCourse from "../../Pages/Dashboard/Courses/CreateCourse";
+import Courses from "../../Pages/Dashboard/Courses/Courses";
 
 const router = createBrowserRouter([
     {
@@ -52,6 +54,16 @@ const router = createBrowserRouter([
             {
                 path: 'user-details/:id',
                 element: <UserDetails></UserDetails>,
+            },
+
+            {
+                path: 'create-course',
+                element: <CreateCourse></CreateCourse>,
+            },
+
+            {
+                path: 'manage-courses',
+                element: <Courses></Courses>,
             }
         ]
     }

@@ -17,7 +17,9 @@ const UserDetails = () => {
         }
     });
 
-    const { name, email, role, gender, bio, currCity, currStudy, phone } = userInfo || {};
+    console.log(id);
+
+    const { name, email, role, gender, biography, currCity, institution, phone, profilePicture } = userInfo || {};
 
     const handleMakeLearner = (userInfo) => {
         axiosSecure.patch(`${import.meta.env.VITE_API_URL}/users/learner/${userInfo?._id}`)
@@ -53,7 +55,9 @@ const UserDetails = () => {
         <div className=" p-5 mx-40 flex flex-col justify-center items-center border">
             <div className=" mt-5 avatar">
                 <div className=" w-40 rounded-full">
-                    <Avatar></Avatar>
+                    {
+                        profilePicture ? <img src={profilePicture} alt="" /> : <Avatar></Avatar>
+                    }
                 </div>
             </div>
 
@@ -62,10 +66,10 @@ const UserDetails = () => {
             </div>
 
             {
-                bio &&
+                biography &&
                 <div className=" mt-5 w-96">
                     <p>
-                        {bio}
+                        {biography}
                     </p>
                 </div>
             }
@@ -78,9 +82,9 @@ const UserDetails = () => {
                     </div>
                 }
                 {
-                    currStudy &&
+                    institution &&
                     <div>
-                        <h2>{currStudy}</h2>
+                        <h2>{institution}</h2>
                     </div>
                 }
                 <div>

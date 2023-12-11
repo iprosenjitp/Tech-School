@@ -21,13 +21,15 @@ const UserProfile = () => {
 
     const currentUser = users.find(userInfo => userInfo?.email === user?.email);
 
-    const { _id, name, email, role, gender, biography, currCity, institution, phone } = currentUser || {};
+    const { _id, name, email, role, gender, biography, currCity, institution, phone, profilePicture } = currentUser || {};
 
     return (
         <div className=" p-5 mx-40 flex flex-col justify-center items-center border">
             <div className=" mt-5 avatar">
                 <div className=" w-40 rounded-full">
-                    <Avatar></Avatar>
+                    {
+                        profilePicture ? <img src={profilePicture} alt="" className="w-full object-cover" /> : <Avatar></Avatar>
+                    }
                 </div>
             </div>
 

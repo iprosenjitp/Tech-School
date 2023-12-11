@@ -55,8 +55,11 @@ async function run() {
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
+        // Database Collections ------------------------------------------------------------------
+
         const techSchoolDB = client.db("techSchoolDB");
         const usersCollection = techSchoolDB.collection("users");
+        const coursesCollection = techSchoolDB.collection("courses");
 
         app.post("/jwt", (req, res) => {
             const user = req.body;
@@ -68,6 +71,8 @@ async function run() {
             res.send({ token });
         })
 
+        // Users Management ------------------------------------------------------------------------
+
         app.get("/users", async (req, res) => {
             const result = await usersCollection.find().toArray();
             res.send(result);
@@ -75,8 +80,16 @@ async function run() {
 
         app.get("/users/:id", async (req, res) => {
             const id = req.params.id;
+            console.log(id);
             const query = { _id: new ObjectId(id) }
             const result = await usersCollection.findOne(query);
+            res.send(result);
+        })
+
+        app.get("/curr-user/:email", async (req, res) => {
+            const email = req.params.email;
+            // const query = { }
+            const result = await usersCollection.findOne({ email: email });
             res.send(result);
         })
 
@@ -132,6 +145,7 @@ async function run() {
             res.send(result);
         })
 
+        // Edit User
         app.put("/users/:id", verifyJWT, async (req, res) => {
             const user = req.body;
             console.log(user);
@@ -139,6 +153,7 @@ async function run() {
 
             const updateDoc = {
                 $set: {
+                    profilePicture: user?.profilePicture,
                     name: user?.name,
                     phone: user?.phone || "",
                     biography: user?.biography || "",
@@ -152,6 +167,25 @@ async function run() {
             res.send(result);
         })
 
+        // Courses Management ------------------------------------------------------------------------
+
+        app.get("/courses", async (req, res) => {
+            const result = await coursesCollection.find().toArray();
+            res.send(result);
+        })
+
+        app.post("/courses", verifyJWT, async (req, res) => {
+            const course = req.body;
+            // const query = { courseName: course.courseName, batchNumber: course.batchNumber };
+            const existingCourse = await coursesCollection.findOne({ $and: [{ courseName: course.courseName }, { batchNumber: course.batchNumber }] });
+            if (existingCourse) {
+                res.send({ message: "Course already exist" });
+            }
+            else {
+                const result = await coursesCollection.insertOne(course);
+                res.send(result);
+            }
+        })
 
     } finally {
         // Ensures that the client will close when you finish/error
