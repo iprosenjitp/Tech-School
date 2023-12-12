@@ -9,7 +9,7 @@ import { Toaster } from 'react-hot-toast'
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <div className='max-w-7xl	mx-auto'>
+  <div className=''>
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
         <Toaster></Toaster>

@@ -6,7 +6,9 @@ const Main = () => {
     return (
         <div>
             <Navbar></Navbar>
-            <Outlet></Outlet>
+            <div className='max-w-8xl mx-auto pt-[72px]'>
+                <Outlet></Outlet>
+            </div>
             <Footer></Footer>
         </div>
     );

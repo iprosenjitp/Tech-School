@@ -16,15 +16,15 @@ const Navbar = () => {
     }
 
     const menuItems = <>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/courses">Courses</Link></li>
-        <li><Link to="/blog">Blog</Link></li>
-        <li><Link to="/faq">FAQ</Link></li>
-        <li><Link to="/about">About</Link></li>
+        <li><Link to="/" className=' text-base font-medium'>Home</Link></li>
+        <li><Link to="/courses" className=' text-base font-medium'>Courses</Link></li>
+        <li><Link to="/blog" className=' text-base font-medium'>Blog</Link></li>
+        <li><Link to="/faq" className=' text-base font-medium'>FAQ</Link></li>
+        <li><Link to="/about" className=' text-base font-medium'>About</Link></li>
     </>
 
     return (
-        <div className="navbar bg-base-100">
+        <div className="navbar bg-base-100 drop-shadow-lg px-5 z-10 fixed">
             <div className="navbar-start">
                 <div className="dropdown">
                     <label tabIndex={0} className="btn btn-ghost lg:hidden">

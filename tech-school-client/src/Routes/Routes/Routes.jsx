@@ -11,6 +11,7 @@ import UserDetails from "../../Pages/Dashboard/Users/UserDetails";
 import UpdateUserProfile from "../../Pages/UserProfile/UpdateUserProfile";
 import CreateCourse from "../../Pages/Dashboard/Courses/CreateCourse";
 import Courses from "../../Pages/Dashboard/Courses/Courses";
+import FAQPage from "../../Pages/FAQ/FAQPage";
 
 const router = createBrowserRouter([
     {
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
                 element: <UpdateUserProfile></UpdateUserProfile>,
                 loader: ({ params }) => fetch(`${import.meta.env.VITE_API_URL}/users/${params.id}`)
             },
+            {
+                path: '/faq',
+                element: <FAQPage></FAQPage>
+            }
         ]
     },
     {

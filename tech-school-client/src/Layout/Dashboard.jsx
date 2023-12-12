@@ -7,7 +7,7 @@ const Dashboard = () => {
         <div>
             <Navbar></Navbar>
 
-            <div className="drawer drawer-open pt-10">
+            <div className="drawer drawer-open pt-32">
                 <input id="my-drawer" type="checkbox" className="drawer-toggle" />
                 <div className="drawer-content">
 
