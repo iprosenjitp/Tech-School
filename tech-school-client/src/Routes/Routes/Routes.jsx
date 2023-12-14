@@ -13,6 +13,7 @@ import CreateCourse from "../../Pages/Dashboard/Courses/CreateCourse";
 import Courses from "../../Pages/Dashboard/Courses/Courses";
 import FAQPage from "../../Pages/FAQ/FAQPage";
 import AllCourses from "../../Pages/AllCourses/AllCourses/AllCourses";
+import CourseDetails from "../../Pages/CourseDetails/CourseDetails/CourseDetails";
 
 const router = createBrowserRouter([
     {
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
             {
                 path: '/all-courses',
                 element: <AllCourses></AllCourses>
+            },
+            {
+                path: '/course-details',
+                element: <CourseDetails></CourseDetails>
             }
         ]
     },
