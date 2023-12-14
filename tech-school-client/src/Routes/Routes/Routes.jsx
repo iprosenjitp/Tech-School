@@ -12,6 +12,7 @@ import UpdateUserProfile from "../../Pages/UserProfile/UpdateUserProfile";
 import CreateCourse from "../../Pages/Dashboard/Courses/CreateCourse";
 import Courses from "../../Pages/Dashboard/Courses/Courses";
 import FAQPage from "../../Pages/FAQ/FAQPage";
+import AllCourses from "../../Pages/AllCourses/AllCourses/AllCourses";
 
 const router = createBrowserRouter([
     {
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
             {
                 path: '/faq',
                 element: <FAQPage></FAQPage>
+            },
+            {
+                path: '/all-courses',
+                element: <AllCourses></AllCourses>
             }
         ]
     },
