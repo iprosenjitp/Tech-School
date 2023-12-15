@@ -13,13 +13,12 @@ const CourseDetailsBanner = () => {
                     <p className=' font-bold my-3'>Tk. <span>2000</span></p>
                     <div className="">
                         <Link to={""} className="btn btn-outline btn-primary">Register Now</Link>
-                        <Link to="/course-details" className="btn btn-outline btn-primary">Enter Classroom</Link>
+                        <Link to="/classroom" className="btn btn-outline btn-primary">Enter Classroom</Link>
                     </div>
                 </div>
                 <div>
                     <img src={CProgLangImg} alt="" className=' w-full h-48' />
                 </div>
-
             </div>
         </div>
     );
