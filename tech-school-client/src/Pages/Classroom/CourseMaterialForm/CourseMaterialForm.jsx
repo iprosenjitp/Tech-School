@@ -1,12 +1,6 @@
 import { useForm, Controller } from 'react-hook-form';
 
 const CourseMaterialForm = () => {
-    // const { handleSubmit, control, setValue, watch } = useForm();
-
-    // const onSubmit = (data) => {
-    //     console.log(data);
-    //     // Handle form submission logic here
-    // };
 
     const { handleSubmit, control, setValue, getValues } = useForm();
 

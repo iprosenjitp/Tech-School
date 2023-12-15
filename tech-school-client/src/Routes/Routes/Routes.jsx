@@ -48,12 +48,13 @@ const router = createBrowserRouter([
             },
             {
                 path: '/all-courses',
-                element: <AllCourses></AllCourses>
+                element: <AllCourses></AllCourses>,
             },
             {
-                path: '/course-details',
+                path: '/all-courses/:id',
                 element: <CourseDetails></CourseDetails>
             },
+
             {
                 path: '/classroom',
                 element: <Classroom></Classroom>

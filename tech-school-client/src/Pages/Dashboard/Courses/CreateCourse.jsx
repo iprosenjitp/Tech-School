@@ -1,10 +1,49 @@
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import useAxiosSecure from "../../../Hooks/useAxios/useAxiosSecure";
 import toast from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
+
+const fetchData = async () => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/instructor`);
+    return response.json();
+};
 
 const CreateCourse = () => {
     const [axiosSecure] = useAxiosSecure();
-    const { register, formState: { errors }, handleSubmit } = useForm();
+    const { register, control, formState: { errors }, handleSubmit, setValue, getValues } = useForm();
+
+    const { data: instructors = [], isLoading } = useQuery({
+        queryKey: ["instructors"],
+        queryFn: fetchData
+    });
+
+    console.log(instructors);
+    // -----------------------
+
+    const applyStyleToSelection = (style) => {
+        const textarea = document.getElementById('myTextarea');
+        const { selectionStart, selectionEnd } = textarea;
+
+        const currentValue = getValues('courseOutline');
+
+        const prefix = currentValue.substring(0, selectionStart);
+        const selectedText = currentValue.substring(selectionStart, selectionEnd);
+        const suffix = currentValue.substring(selectionEnd);
+
+        // Apply the style to the selected text
+        const styledText = `${style}${selectedText}${style}`;
+
+        // Update the textarea with the modified text
+        setValue('courseOutline', `${prefix}${styledText}${suffix}`);
+
+        // Adjust the selection to cover the newly applied styled text
+        textarea.setSelectionRange(
+            selectionStart + style.length,
+            selectionEnd + style.length
+        );
+    };
+
+    //--------------------------
 
     const imgHostingURL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_KEY}`
 
@@ -20,6 +59,12 @@ const CreateCourse = () => {
             .then(res => res.json())
             .then(imgResponse => {
                 data.courseBanner = imgResponse.data.display_url
+                // const instructorId = data.selectedInstructor.split(" | ")[0];
+                // const instructorName = data.selectedInstructor.split(" | ")[1];
+
+                // const instructor = { instructorId, instructorName };
+                // const courseInfo = { ...data, instructor };
+
                 axiosSecure.post(`${import.meta.env.VITE_API_URL}/courses`, data)
                     .then(res => {
                         console.log(res);
@@ -175,6 +220,7 @@ const CreateCourse = () => {
                             <label className="label font-bold">
                                 <span className="label-text">Select Instructor</span>
                             </label>
+
                             <select
                                 {
                                 ...register("selectedInstructor", {
@@ -184,9 +230,15 @@ const CreateCourse = () => {
                                 className="select select-bordered w-full border-2"
                             >
                                 <option value="" disabled selected>Select an instructor</option>
-                                <option value="instructor1">Instructor 1</option>
-                                <option value="instructor2">Instructor 2</option>
+                                {
+                                    !isLoading && instructors.map(instructor =>
+                                        <option
+                                            key={instructor._id}
+                                            value={instructor._id}
+                                        >{instructor.name}</option>)
+                                }
                             </select>
+
                             {errors.selectedInstructor && <p className='text-red-600'>{errors.selectedInstructor?.message}</p>}
                         </div>
 
@@ -208,7 +260,7 @@ const CreateCourse = () => {
                     </div>
 
                     {/* Course Outline */}
-                    <div className="form-control w-full mt-2">
+                    {/* <div className="form-control w-full mt-2">
                         <label className="label">
                             <span className="label-text font-bold">Course Outline</span>
                         </label>
@@ -221,7 +273,61 @@ const CreateCourse = () => {
                             className="textarea textarea-bordered w-full h-32 border-2"
                         ></textarea>
                         {errors.courseOutline && <p className='text-red-600'>{errors.courseOutline?.message}</p>}
-                    </div>
+                    </div> */}
+
+
+                    <>
+                        <div className="form-control w-full">
+                            <label className="label">
+                                <span className="label-text font-bold">Text Content</span>
+                            </label>
+                            <Controller
+                                name="courseOutline"
+                                control={control}
+                                render={({ field }) => (
+                                    <textarea
+                                        {...field}
+                                        id="myTextarea"
+                                        className="textarea textarea-bordered w-full border-2"
+                                        rows="6"
+                                        placeholder="Type your text here..."
+                                        required="Course outline is required"
+                                    />
+                                )}
+                            />
+                        </div>
+
+                        <div className="form-control w-full max-w-md mt-4">
+                            <label className="label">
+                                <span className="label-text">Text Formatting</span>
+                            </label>
+                            <div className="flex items-center mt-2">
+                                <button
+                                    type="button"
+                                    onClick={() => applyStyleToSelection('**')}
+                                    className="btn btn-sm btn-secondary mr-2"
+                                >
+                                    Bold
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => applyStyleToSelection('*')}
+                                    className="btn btn-sm btn-secondary mr-2"
+                                >
+                                    Italic
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => applyStyleToSelection('\n- ')}
+                                    className="btn btn-sm btn-secondary"
+                                >
+                                    Bullet Point
+                                </button>
+                            </div>
+                        </div>
+                    </>
+
+
 
                     {/* Course Banner */}
                     <div className="form-control w-full">

@@ -6,7 +6,7 @@ import UserRow from "./UserRow";
 const Users = () => {
     const [axiosSecure] = useAxiosSecure();
 
-    const { data: users = [] } = useQuery({
+    const { data: users = [], isLoading } = useQuery({
         queryKey: ["users"],
         queryFn: async () => {
             const res = await axiosSecure.get("/users");
@@ -30,7 +30,7 @@ const Users = () => {
                     <tbody>
                         {/* row 1 */}
                         {
-                            users.map((user, idx) => (
+                            !isLoading && users.map((user, idx) => (
                                 <UserRow
                                     key={user._id}
                                     user={user}

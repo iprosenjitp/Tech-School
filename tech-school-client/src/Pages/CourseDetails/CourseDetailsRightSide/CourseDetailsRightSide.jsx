@@ -1,14 +1,16 @@
 import CourseFeedback from "../CourseFeedback/CourseFeedback";
 import FeedbackForm from "../FeedbackForm/FeedbackForm";
 
-const CourseDetailsRightSide = () => {
+const CourseDetailsRightSide = ({ course }) => {
+    const { courseStartDate, registrationEndDate, selectedInstructor, } = course;
+
     return (
         <div>
             <div>
                 <h2 className=' text-xl font-bold mb-3'>Schedule</h2>
                 <p className=' text-sm font-extrabold'>Mon and Thu 09:00 PM - 11:00 PM</p>
-                <p className=' text-sm'>Starts From <span>22 December 2023</span></p>
-                <p className=' text-sm'>Registration End: <span>20 December 2023</span></p>
+                <p className=' text-sm'>Starts From <span>{courseStartDate}</span></p>
+                <p className=' text-sm'>Registration End: <span>{registrationEndDate}</span></p>
             </div>
 
             <div className="mt-6 ">
@@ -20,7 +22,7 @@ const CourseDetailsRightSide = () => {
                         </div>
                     </div>
                     <div>
-                        <h2 className="text-sm font-extrabold">Prosenjit Kumar Pal</h2>
+                        <h2 className="text-sm font-extrabold">{selectedInstructor}</h2>
                         <h2 className="text-sm">Instructor, Tech School</h2>
                     </div>
                 </div>

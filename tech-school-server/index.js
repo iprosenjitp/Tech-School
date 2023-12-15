@@ -92,6 +92,11 @@ async function run() {
             res.send(result);
         })
 
+        app.get("/instructor", async (req, res) => {
+            const result = await usersCollection.find({ role: "instructor" }).toArray();
+            res.send(result);
+        })
+
         app.post("/users", async (req, res) => {
             const user = req.body;
             const query = { email: user.email };
@@ -173,8 +178,16 @@ async function run() {
             res.send(result);
         })
 
+        app.get("/courses/:id", async (req, res) => {
+            const result = await coursesCollection.findOne({
+                _id: new ObjectId(req.params.id)
+            });
+            res.send(result);
+        })
+
         app.post("/courses", verifyJWT, async (req, res) => {
             const course = req.body;
+            // console.log(course);
             // const query = { courseName: course.courseName, batchNumber: course.batchNumber };
             const existingCourse = await coursesCollection.findOne({ $and: [{ courseName: course.courseName }, { batchNumber: course.batchNumber }] });
             if (existingCourse) {
