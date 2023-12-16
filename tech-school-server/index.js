@@ -3,6 +3,7 @@ const cors = require('cors')
 require('dotenv').config()
 const jwt = require('jsonwebtoken');
 const app = express()
+const stripe = require("stripe")(process.env.PAYMENT_SECRET_KEY);
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000
 
@@ -60,6 +61,8 @@ async function run() {
         const techSchoolDB = client.db("techSchoolDB");
         const usersCollection = techSchoolDB.collection("users");
         const coursesCollection = techSchoolDB.collection("courses");
+        const bookingsCollection = techSchoolDB.collection("bookings");
+        const paymentsCollection = techSchoolDB.collection("payments");
 
         app.post("/jwt", (req, res) => {
             const user = req.body;
@@ -71,7 +74,63 @@ async function run() {
             res.send({ token });
         })
 
+        // Verify Admin --------------------------------------------------------------
+        const verifyAdmin = async (req, res, next) => {
+            const email = req.decoded.email;
+
+            const query = { email: email };
+
+            const user = await usersCollection.findOne(query);
+
+            if (user?.role !== "admin") {
+                return res
+                    .status(403)
+                    .send({ error: true, message: "forbidden access" });
+            }
+
+            next();
+        };
+
+        // Verify Instructor --------------------------------------------------------------
+        const verifyInstructor = async (req, res, next) => {
+            const email = req.decoded.email;
+
+            const query = { email: email };
+
+            const user = await usersCollection.findOne(query);
+
+            if (user?.role !== "instructor") {
+                return res
+                    .status(403)
+                    .send({ error: true, message: "forbidden access" });
+            }
+
+            next();
+        };
+
+        // Verify Learner --------------------------------------------------------------
+        const verifyLearner = async (req, res, next) => {
+            const email = req.decoded.email;
+
+            const query = { email: email };
+
+            const user = await usersCollection.findOne(query);
+
+            if (user?.role !== "learner") {
+                return res
+                    .status(403)
+                    .send({ error: true, message: "forbidden access" });
+            }
+
+            next();
+        };
+
         // Users Management ------------------------------------------------------------------------
+
+        // app.get("/users", verifyJWT, verifyAdmin, async (req, res) => {
+        //     const result = await usersCollection.find().toArray();
+        //     res.send(result);
+        // })
 
         app.get("/users", async (req, res) => {
             const result = await usersCollection.find().toArray();
@@ -94,6 +153,11 @@ async function run() {
 
         app.get("/instructor", async (req, res) => {
             const result = await usersCollection.find({ role: "instructor" }).toArray();
+            res.send(result);
+        })
+
+        app.get("/learners", async (req, res) => {
+            const result = await usersCollection.find({ role: "learner" }).toArray();
             res.send(result);
         })
 
@@ -163,7 +227,8 @@ async function run() {
                     biography: user?.biography || "",
                     gender: user?.gender || "",
                     institution: user?.institution || "",
-                    linkedIn: user?.linkedIn || ""
+                    linkedIn: user?.linkedIn || "",
+                    currCity: user?.currCity || "",
                 }
             }
 
@@ -198,6 +263,123 @@ async function run() {
                 res.send(result);
             }
         })
+
+        // Course Bookings Management
+        app.get("/bookings", async (req, res) => {
+            const result = await bookingsCollection.find().toArray();
+            res.send(result);
+
+        })
+
+
+        app.get("/courseBookings", verifyJWT, async (req, res) => {
+            const email = req.query.email;
+
+            if (!email) {
+                res.send([]);
+            }
+
+            const decodedEmail = req.decoded.email;
+
+            if (email !== decodedEmail) {
+                return res
+                    .status(403)
+                    .send({ error: true, message: "forbidden access" });
+            }
+
+            const query = { email: email };
+
+            const result = await bookingsCollection.find(query).toArray();
+            res.send(result);
+        });
+
+        app.get("/courseBookings/:id", verifyJWT, async (req, res) => {
+            const id = req.params.id;
+
+            const query = { _id: new ObjectId(id) };
+
+            const result = await bookingsCollection.findOne(query);
+            res.send(result);
+        });
+
+        app.post("/courseBookings", verifyJWT, async (req, res) => {
+            const courseItem = req.body;
+            const existingBooking = await bookingsCollection.findOne({ bookingItemId: courseItem.bookedItemId });
+            if (existingBooking) {
+                console.log(existingBooking);
+                res.send("Already Added!")
+            }
+            else {
+                const result = await bookingsCollection.insertOne(courseItem);
+                res.send(result);
+            }
+        });
+
+        // app.post("/bookings", verifyJWT, async (req, res) => {
+        //     const courseItem = req.body;
+        //     // console.log(courseItem);
+        //     const insertResult = await bookingsCollection.insertOne(courseItem);
+        //     const getBookings = await bookingsCollection.findOne({ bookedItemId: courseItem.bookedItemId })
+        //     // console.log(getBookings);
+        //     res.send(getBookings);
+        // });
+
+        app.delete("/courseBookings/:id", async (req, res) => {
+            const id = req.params.id;
+
+            const query = { _id: new ObjectId(id) };
+
+            const result = await bookingsCollection.deleteOne(query);
+            res.send(result);
+        });
+
+
+        // <---- create payment intent ---->
+        app.post("/create-payment-intent", verifyJWT, async (req, res) => {
+            const { courseFee } = req.body;
+
+            if (courseFee) {
+                const amount = parseFloat(courseFee) * 100;
+                const paymentIntent = await stripe.paymentIntents.create({
+                    amount: amount,
+                    currency: "usd",
+                    payment_method_types: ["card"],
+                });
+
+                res.send({
+                    clientSecret: paymentIntent.client_secret,
+                });
+            }
+        });
+
+        // <---payments collection apis--->
+
+        app.post("/payments", verifyJWT, async (req, res) => {
+            const payment = req.body;
+
+            const insertResult = await paymentsCollection.insertOne(payment);
+
+            const query = { _id: new ObjectId(payment.bookedItemId) };
+
+            const deleteResult = await bookingsCollection.deleteOne(query);
+
+            res.send({ insertResult, deleteResult });
+        });
+
+        app.get("/enrolled-courses/:email", verifyJWT, async (req, res) => {
+            const email = req.params.email;
+            const result = await paymentsCollection
+                .aggregate([
+                    {
+                        $match: {
+                            email: email,
+                        },
+                    },
+                    { $sort: { date: -1 } },
+                ])
+                .toArray();
+            res.send(result);
+        });
 
     } finally {
         // Ensures that the client will close when you finish/error

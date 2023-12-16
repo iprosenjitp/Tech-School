@@ -21,6 +21,17 @@ const UserDetails = () => {
 
     const { name, email, role, gender, biography, currCity, institution, phone, profilePicture } = userInfo || {};
 
+
+    // if (!isLoading) {
+    //     const { name, email, role, gender, biography, currCity, institution, phone, profilePicture } = userInfo || {};
+    // }
+
+    // useEffect(() => {
+    //     if (!isLoading) {
+    //         const { name, email, role, gender, biography, currCity, institution, phone, profilePicture } = userInfo || {};
+    //     }
+    // }, [])
+
     const handleMakeLearner = (userInfo) => {
         axiosSecure.patch(`${import.meta.env.VITE_API_URL}/users/learner/${userInfo?._id}`)
             .then((data) => {

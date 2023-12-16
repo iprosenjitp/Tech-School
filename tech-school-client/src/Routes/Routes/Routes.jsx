@@ -15,11 +15,16 @@ import FAQPage from "../../Pages/FAQ/FAQPage";
 import AllCourses from "../../Pages/AllCourses/AllCourses/AllCourses";
 import CourseDetails from "../../Pages/CourseDetails/CourseDetails/CourseDetails";
 import Classroom from "../../Pages/Classroom/Classroom/Classroom";
+import ErrorPage from "../../Pages/ErrorPage/ErrorPage";
+import CourseCart from "../../Pages/Dashboard/CourseCart/CourseCart";
+import Payment from "../../Pages/Dashboard/Payment/Payment/Payment";
+import EnrolledCourses from "../../Pages/Dashboard/EnrolledCourses/EnrolledCourses";
 
 const router = createBrowserRouter([
     {
         path: '/',
         element: <Main></Main>,
+        errorElement: <ErrorPage></ErrorPage>,
         children: [
             {
                 path: '/',
@@ -66,6 +71,7 @@ const router = createBrowserRouter([
         element: <PrivateRoute>
             <Dashboard></Dashboard>
         </PrivateRoute>,
+        errorElement: <ErrorPage></ErrorPage>,
         children: [
             {
                 path: 'manage-users',
@@ -85,6 +91,21 @@ const router = createBrowserRouter([
             {
                 path: 'manage-courses',
                 element: <Courses></Courses>,
+            },
+
+            {
+                path: 'course-cart',
+                element: <CourseCart></CourseCart>
+            },
+
+            {
+                path: 'enrolled-courses',
+                element: <EnrolledCourses></EnrolledCourses>
+            },
+
+            {
+                path: 'payment/:id',
+                element: <Payment></Payment>,
             }
         ]
     }

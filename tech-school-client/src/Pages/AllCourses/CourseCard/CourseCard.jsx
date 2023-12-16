@@ -1,11 +1,46 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import moment from 'moment';
+import useAuth from '../../../Hooks/useAuth/useAuth';
+import useAxiosSecure from '../../../Hooks/useAxios/useAxiosSecure';
+import toast from 'react-hot-toast';
 
 const CourseCard = ({ course }) => {
+    const { user } = useAuth();
+    const [axiosSecure] = useAxiosSecure();
+
+    const navigate = useNavigate();
+    const location = useLocation();
+
     console.log(course);
     const { _id, courseBanner, courseName, batchNumber, courseFee, courseIntroduction, registrationEndDate, courseStartDate } = course || {};
 
     const remDays = moment(registrationEndDate).fromNow("days");
+
+    const handleAddToCart = (course) => {
+        if (user && user?.email) {
+            const { _id, ...rest } = course;
+
+            const bookingItem = {
+                bookingItemId: _id,
+                ...rest,
+                email: user?.email,
+            };
+
+            axiosSecure.post("/courseBookings", bookingItem).then((res) => {
+                if (res.data.insertedId) {
+                    toast.success("Course added in course cart");
+                    navigate("/dashboard/course-cart");
+                }
+                console.log(res.data);
+                // else{
+                //     toast.error()
+                // }
+            });
+        } else {
+            toast.error("You must have to login");
+            navigate("/login", { state: { from: location } });
+        }
+    }
 
     return (
         <div className=" grid grid-cols-3 border shadow-lg h-96 rounded">
@@ -34,7 +69,7 @@ const CourseCard = ({ course }) => {
                     </div>
                 </div>
                 <div className=" space-x-3 flex justify-end mt-6">
-                    <Link to={""} className="btn btn-outline btn-primary">Add Favourites</Link>
+                    <button onClick={() => handleAddToCart(course)} className="btn btn-outline btn-primary">Add to Cart</button>
                     <Link to={`/all-courses/${_id}`} className="btn btn-outline btn-primary">See Details</Link>
                 </div>
             </div>

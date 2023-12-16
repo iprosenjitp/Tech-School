@@ -11,7 +11,7 @@ const UpdateUserProfile = () => {
 
     const navigate = useNavigate();
 
-    const { _id, name, email, phone, biography, institution, linkedIn, profilePicture } = userInfo || {};
+    const { _id, name, email, phone, biography, institution, linkedIn, profilePicture, currCity } = userInfo || {};
     // console.log(userInfo);
 
     const { register, formState: { errors }, handleSubmit, reset } = useForm();
@@ -57,168 +57,160 @@ const UpdateUserProfile = () => {
     }
 
     return (
-        <div className="flex justify-center items-center">
-            <div className=" ">
-                <h2 className='text-4xl text-center'>Update your profile</h2>
-                <form onSubmit={handleSubmit(handleUpdateUserProfile)}>
-                    <div className=" mt-5 avatar flex items-center">
-                        <div className=" w-40 rounded-full ">
-                            {
-                                profilePicture ? <img src={profilePicture} alt="" className="w-full object-cover" /> : <Avatar></Avatar>
-                            }
-                        </div>
-                        <div>
-                            <label className="label">
-                                <span className="label-text">Change Picture</span>
-                            </label>
-                            <input
-                                type="file"
-                                {...register("profilePicture", {
-                                })}
-                                className="input w-full max-w-xs"
-                            />
-                        </div>
-
-                        {/* <div className="relative mt-1">
-                            <input
-                                type="file"
-                                {...register("profilePicture", {
-                                    required: "Course banner is required",
-                                })}
-                                className=" hidden btn btn-accent w-full max-w-xs"
-                                id="profilePictureInput"
-                                onChange={(e) => {
-                                    setValue("profilePicture", e.target.files[0]);
-                                }}
-                            />
-                            <button type="button" className="btn btn-secondary" onClick={() => document.getElementById("profilePictureInput").click()}>
-                                Choose File
-                            </button>
-                        </div> */}
-
-                        {/* <input className=' ml-3 btn btn-accent w-32' value="Change Picture" type="submit" /> */}
+        <div className=" mx-40 mt-10 p-5 border">
+            <h2 className='text-xl font-bold mb-3'>Update your profile</h2>
+            <form onSubmit={handleSubmit(handleUpdateUserProfile)}>
+                <div className=" mt-5 avatar grid grid-cols-1">
+                    <div className=" w-40 rounded-full ">
+                        {
+                            profilePicture ? <img src={profilePicture} alt="" className="w-full object-cover" /> : <Avatar></Avatar>
+                        }
                     </div>
 
-                    <div className="mt-5 form-control w-full max-w-xs">
-                        <label className="label">
-                            <span className="label-text">Your Name</span>
-                        </label>
-                        <input
-                            type="text"{
-                            ...register("name", {
-                                required: "Name is required"
-                            })}
-                            defaultValue={name}
-                            className="input input-bordered w-full max-w-xs" />
-                        {errors.name && <p className='text-red-600'>{errors.name?.message}</p>}
-                    </div>
+                    <label className="label mt-3">
+                        <span className="label-text font-bold">Change Picture</span>
+                    </label>
 
-                    <div className="mt-5 form-control w-full max-w-xs">
-                        <label className="label">
-                            <span className="label-text">Your Email</span>
-                        </label>
-                        <input
-                            type="email"{
-                            ...register("email", {
-                                required: "Email is required"
-                            })}
-                            defaultValue={email}
-                            readOnly
-                            className="input input-bordered w-full max-w-xs" />
-                        {errors.email && <p className='text-red-600'>{errors.email?.message}</p>}
-                    </div>
+                    <input
+                        type="file"
+                        {...register("profilePicture", {
+                        })}
+                        className="input w-full"
+                    />
+                </div>
 
-                    <div className="mt-5 form-control w-full max-w-xs">
-                        <label className="label">
-                            <span className="label-text">Mobile Number</span>
-                        </label>
-                        {/* <input
+                <div className="mt-5 form-control w-full max-w-xs">
+                    <label className="label">
+                        <span className="label-text font-bold">Your Name</span>
+                    </label>
+                    <input
+                        type="text"{
+                        ...register("name", {
+                            required: "Name is required"
+                        })}
+                        defaultValue={name}
+                        className="input input-bordered w-full " />
+                    {errors.name && <p className='text-red-600'>{errors.name?.message}</p>}
+                </div>
+
+                <div className="mt-5 form-control w-full max-w-xs">
+                    <label className="label">
+                        <span className="label-text font-bold">Your Email</span>
+                    </label>
+                    <input
+                        type="email"{
+                        ...register("email", {
+                            required: "Email is required"
+                        })}
+                        defaultValue={email}
+                        readOnly
+                        className="input input-bordered w-full max-w-xs" />
+                    {errors.email && <p className='text-red-600'>{errors.email?.message}</p>}
+                </div>
+
+                <div className="mt-5 form-control w-full max-w-xs">
+                    <label className="label">
+                        <span className="label-text font-bold">Your Address</span>
+                    </label>
+                    <input
+                        type="text"{
+                        ...register("currCity", {
+                        })}
+                        defaultValue={currCity}
+                        className="input input-bordered w-full " />
+                    {/* {errors.name && <p className='text-red-600'>{errors.name?.message}</p>} */}
+                </div>
+
+                <div className="mt-5 form-control w-full max-w-xs">
+                    <label className="label">
+                        <span className="label-text font-bold">Mobile Number</span>
+                    </label>
+                    {/* <input
                         type="number"{
                         ...register("phone")}
                         placeholder="01711111111"
                         className="input input-bordered w-full max-w-xs" />
                     {errors.phone && <p className='text-red-600'>{errors.phone?.message}</p>} */}
-                        <input type="tel"
-                            // placeholder="Mobile number"
-                            {...register("phone", {
-                                minLength: 11,
-                                maxLength: 11
-                            })}
-                            defaultValue={phone}
-                            className="input input-bordered w-full max-w-xs"
-                        />
-                        {errors.phone && <p className='text-red-600'>{errors.phone?.message}</p>}
-                    </div>
+                    <input type="tel"
+                        // placeholder="Mobile number"
+                        {...register("phone", {
+                            minLength: 11,
+                            maxLength: 11
+                        })}
+                        defaultValue={phone}
+                        className="input input-bordered w-full max-w-xs"
+                    />
+                    {errors.phone && <p className='text-red-600'>{errors.phone?.message}</p>}
+                </div>
 
-                    <div className="mt-5 form-control w-full max-w-xs">
-                        <label className="label">
-                            <span className="label-text">Biography</span>
+                <div className="mt-5 form-control w-full max-w-xs">
+                    <label className="label">
+                        <span className="label-text font-bold">Biography</span>
+                    </label>
+                    <textarea
+                        type="text"{
+                        ...register("biography")}
+                        // placeholder="A short introduction about yourself. This would be visible to visitors of Tech School website"
+                        defaultValue={biography}
+                        className="input input-bordered w-full max-w-xs h-32" />
+                    {errors.biography && <p className='text-red-600'>{errors.biography?.message}</p>}
+                </div>
+
+                <div className="mt-5 form-control w-full max-w-xs">
+                    <label className="label">
+                        <span className="label-text font-bold">Gender</span>
+                    </label>
+                    <div className=" flex gap-5">
+                        <label>
+                            <input type="radio"
+                                value="male"
+                                {...register("gender")}
+                                // defaultValue={gender && gender === "male" ? defaultChecked : ""}
+                                defaultChecked
+                            />
+                            <span className=" ml-2">Male</span>
                         </label>
-                        <textarea
-                            type="text"{
-                            ...register("biography")}
-                            // placeholder="A short introduction about yourself. This would be visible to visitors of Tech School website"
-                            defaultValue={biography}
-                            className="input input-bordered w-full max-w-xs h-32" />
-                        {errors.biography && <p className='text-red-600'>{errors.biography?.message}</p>}
-                    </div>
 
-                    <div className="mt-5 form-control w-full max-w-xs">
-                        <label className="label">
-                            <span className="label-text">Gender</span>
+                        <label>
+                            <input type="radio"
+                                value="female"
+                                {...register("gender")}
+                            />
+                            <span className=" ml-2">Female</span>
                         </label>
-                        <div className=" flex gap-5">
-                            <label>
-                                <input type="radio"
-                                    value="male"
-                                    {...register("gender")}
-                                    // defaultValue={gender && gender === "male" ? defaultChecked : ""}
-                                    defaultChecked
-                                />
-                                <span className=" ml-2">Male</span>
-                            </label>
-
-                            <label>
-                                <input type="radio"
-                                    value="female"
-                                    {...register("gender")}
-                                />
-                                <span className=" ml-2">Female</span>
-                            </label>
-                        </div>
                     </div>
+                </div>
 
-                    <div className="mt-5 form-control w-full max-w-xs">
-                        <label className="label">
-                            <span className="label-text">School/College/University</span>
-                        </label>
-                        <input
-                            type="text"{
-                            ...register("institution")}
-                            // placeholder="XYZ University"
-                            defaultValue={institution}
-                            className="input input-bordered w-full max-w-xs" />
-                        {errors.institution && <p className='text-red-600'>{errors.institution?.message}</p>}
-                    </div>
+                <div className="mt-5 form-control w-full max-w-xs">
+                    <label className="label">
+                        <span className="label-text font-bold">School/College/University</span>
+                    </label>
+                    <input
+                        type="text"{
+                        ...register("institution")}
+                        // placeholder="XYZ University"
+                        defaultValue={institution}
+                        className="input input-bordered w-full max-w-xs" />
+                    {errors.institution && <p className='text-red-600'>{errors.institution?.message}</p>}
+                </div>
 
-                    <div className="mt-5 form-control w-full max-w-xs">
-                        <label className="label">
-                            <span className="label-text">LinkedIn Profile Link</span>
-                        </label>
-                        <input
-                            type="text"{
-                            ...register("linkedIn")}
-                            // placeholder="https://www.linkedin.com/in/iprosenjitp/"
-                            defaultValue={linkedIn}
-                            className="input input-bordered w-full max-w-xs" />
-                        {errors.linkedIn && <p className='text-red-600'>{errors.linkedIn?.message}</p>}
-                    </div>
+                <div className="mt-5 form-control w-full max-w-xs">
+                    <label className="label">
+                        <span className="label-text font-bold">LinkedIn Profile Link</span>
+                    </label>
+                    <input
+                        type="text"{
+                        ...register("linkedIn")}
+                        // placeholder="https://www.linkedin.com/in/iprosenjitp/"
+                        defaultValue={linkedIn}
+                        className="input input-bordered w-full max-w-xs" />
+                    {errors.linkedIn && <p className='text-red-600'>{errors.linkedIn?.message}</p>}
+                </div>
 
-                    <div className="mt-5 flex items-center justify-center">
-                        <input className=' btn btn-accent w-32' value="Save Changes" type="submit" />
-                    </div>
-                </form>
-            </div>
+                <div className="mt-5 flex items-center justify-center">
+                    <input className=' btn btn-accent w-32' value="Save Changes" type="submit" />
+                </div>
+            </form>
         </div>
     );
 };

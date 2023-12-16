@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Avatar from './Avatar';
 import useAuth from '../../../Hooks/useAuth/useAuth';
 import useCurrUser from '../../../Hooks/useCurrUser/useCurrUser';
@@ -7,11 +7,14 @@ const Navbar = () => {
     const { user, logOut } = useAuth();
     // console.log(user);
     const [{ profilePicture }] = useCurrUser();
+    const navigate = useNavigate();
 
     // console.log(currUserInfo);
     const handleLogOut = () => {
         logOut()
-            .then(() => { })
+            .then(() => {
+                navigate("/");
+            })
             .catch(error => console.log(error))
     }
 

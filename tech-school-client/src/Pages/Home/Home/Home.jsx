@@ -7,15 +7,17 @@ import WhyTS from "../WhyTS/WhyTS";
 const Home = () => {
     const [axiosSecure] = useAxiosSecure();
     const { data: users = [] } = useQuery({
-        queryKey: ["users"],
+        queryKey: ["learners"],
         queryFn: async () => {
-            const res = await axiosSecure.get("/users");
+            const res = await axiosSecure.get("/learners");
             return res.data;
         }
     })
 
     const allLearners = users.filter(user => user.role === "learner");
     const numbersOfLearners = allLearners.length;
+    // const numbersOfLearners = 5000;
+
 
     return (
         <div>

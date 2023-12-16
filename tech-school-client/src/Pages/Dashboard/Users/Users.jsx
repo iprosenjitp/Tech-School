@@ -28,7 +28,6 @@ const Users = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {/* row 1 */}
                         {
                             !isLoading && users.map((user, idx) => (
                                 <UserRow
