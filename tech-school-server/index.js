@@ -216,7 +216,7 @@ async function run() {
         // Edit User
         app.put("/users/:id", verifyJWT, async (req, res) => {
             const user = req.body;
-            console.log(user);
+            // console.log(user);
             const query = { _id: new ObjectId(req.params.id) };
 
             const updateDoc = {
@@ -281,6 +281,29 @@ async function run() {
             const updateDoc = {
                 $set: {
                     isPublished: "false"
+                }
+            }
+            const result = await coursesCollection.updateOne(query, updateDoc)
+            res.send(result)
+        })
+
+        app.put("/courses/update-course/:id", verifyJWT, async (req, res) => {
+            const courseInfo = req.body;
+            const query = { _id: new ObjectId(req.params.id) }
+            const updateDoc = {
+                $set: {
+                    courseIntroduction: courseInfo?.courseIntroduction,
+                    courseLevel: courseInfo?.courseLevel,
+                    courseName: courseInfo?.courseName,
+                    batchNumber: courseInfo?.batchNumber,
+                    registrationStartDate: courseInfo?.registrationStartDate,
+                    registrationEndDate: courseInfo?.registrationEndDate,
+                    courseStartDate: courseInfo?.courseStartDate,
+                    courseDurationInMonths: courseInfo?.courseDurationInMonths,
+                    selectedInstructor: courseInfo?.selectedInstructor,
+                    courseFee: courseInfo?.courseFee,
+                    courseBanner: courseInfo?.courseBanner,
+                    courseOutline: courseInfo?.courseOutline,
                 }
             }
             const result = await coursesCollection.updateOne(query, updateDoc)
