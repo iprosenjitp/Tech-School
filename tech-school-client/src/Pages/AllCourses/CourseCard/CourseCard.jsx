@@ -12,9 +12,23 @@ const CourseCard = ({ course }) => {
     const location = useLocation();
 
     console.log(course);
-    const { _id, courseBanner, courseName, batchNumber, courseFee, courseIntroduction, registrationEndDate, courseStartDate } = course || {};
+    const { _id, courseBanner, courseName, batchNumber, courseFee, courseIntroduction, registrationStartDate, registrationEndDate, courseStartDate } = course || {};
 
+    const today = moment().format("YYYY-MM-DD");
+    const isComingSoon = (today < registrationStartDate) ? true : false;
+    const isRegistrationClosed = (today > registrationEndDate) ? true : false;
     const remDays = moment(registrationEndDate).fromNow("days");
+
+    let registrationStatus;
+    if (isComingSoon) {
+        registrationStatus = "Coming soon";
+    }
+    else if (isRegistrationClosed) {
+        registrationStatus = "Registration closed";
+    }
+    else {
+        registrationStatus = remDays + " remaining";
+    }
 
     const handleAddToCart = (course) => {
         if (user && user?.email) {
@@ -59,13 +73,17 @@ const CourseCard = ({ course }) => {
                 <div className=' grid grid-cols-2'>
                     <div>
                         <h2 className=' mb-1 font-semibold'>Registration</h2>
-                        <p className=' text-sm font-extrabold'><span>{remDays}</span> Days Remaining</p>
-                        <p className=' text-sm'>Registration End: <span>{registrationEndDate}</span></p>
+                        <p className=' text-sm font-extrabold'>{registrationStatus}</p>
+
                     </div>
                     <div>
-                        <h2 className=' mb-1 font-semibold'>Schedule</h2>
-                        <p className=' text-sm font-extrabold'>Mon and Thu 09:00 PM - 11:00 PM</p>
-                        <p className=' text-sm'>Starts From <span>{courseStartDate}</span></p>
+                        {
+                            (isComingSoon || isRegistrationClosed) || <>
+                                <h2 className=' mb-1 font-semibold'>Schedule</h2>
+                                <p className=' text-sm font-extrabold'>Mon and Thu 09:00 PM - 11:00 PM</p>
+                                <p className=' text-sm'>Starts From <span>{courseStartDate}</span></p>
+                            </>
+                        }
                     </div>
                 </div>
                 <div className=" space-x-3 flex justify-end mt-6">

@@ -151,7 +151,7 @@ async function run() {
             res.send(result);
         })
 
-        app.get("/instructor", async (req, res) => {
+        app.get("/instructors", async (req, res) => {
             const result = await usersCollection.find({ role: "instructor" }).toArray();
             res.send(result);
         })
@@ -254,6 +254,7 @@ async function run() {
             const course = req.body;
             // console.log(course);
             // const query = { courseName: course.courseName, batchNumber: course.batchNumber };
+
             const existingCourse = await coursesCollection.findOne({ $and: [{ courseName: course.courseName }, { batchNumber: course.batchNumber }] });
             if (existingCourse) {
                 res.send({ message: "Course already exist" });
@@ -262,6 +263,33 @@ async function run() {
                 const result = await coursesCollection.insertOne(course);
                 res.send(result);
             }
+        })
+
+        app.patch("/courses/published/:id", async (req, res) => {
+            const query = { _id: new ObjectId(req.params.id) }
+            const updateDoc = {
+                $set: {
+                    isPublished: "true"
+                }
+            }
+            const result = await coursesCollection.updateOne(query, updateDoc)
+            res.send(result)
+        })
+
+        app.patch("/courses/hidden/:id", async (req, res) => {
+            const query = { _id: new ObjectId(req.params.id) }
+            const updateDoc = {
+                $set: {
+                    isPublished: "false"
+                }
+            }
+            const result = await coursesCollection.updateOne(query, updateDoc)
+            res.send(result)
+        })
+
+        app.delete("/courses/remove/:id", verifyJWT, async (req, res) => {
+            const result = await coursesCollection.deleteOne({ _id: new ObjectId(req.params.id) })
+            res.send(result);
         })
 
         // Course Bookings Management

@@ -24,10 +24,15 @@ const AllCourses = () => {
                     <div className="col-span-2 pr-5 space-y-3">
 
                         {
-                            !isLoading && courses?.map(course => (<CourseCard
-                                key={course._id}
-                                course={course}
-                            ></CourseCard>))
+                            !isLoading && courses?.map(course => (<div key={course?._id}>
+                                {
+                                    course?.isPublished === "true" &&
+                                    <CourseCard
+                                        key={course._id}
+                                        course={course}
+                                    ></CourseCard>
+                                }
+                            </div>))
                         }
 
                     </div>

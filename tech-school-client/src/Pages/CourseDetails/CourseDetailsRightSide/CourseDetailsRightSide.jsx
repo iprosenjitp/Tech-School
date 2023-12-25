@@ -1,8 +1,22 @@
+import { useQuery } from "@tanstack/react-query";
 import CourseFeedback from "../CourseFeedback/CourseFeedback";
 import FeedbackForm from "../FeedbackForm/FeedbackForm";
 
 const CourseDetailsRightSide = ({ course }) => {
     const { courseStartDate, registrationEndDate, selectedInstructor, } = course;
+
+    const fetchData = async () => {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/instructors`);
+        return response.json();
+    };
+
+    const { data: instructors = [] } = useQuery({
+        queryKey: ["instructors"],
+        queryFn: fetchData
+    });
+
+    const instructorInfo = instructors.find(instructor => instructor._id === selectedInstructor);
+    console.log(instructorInfo);
 
     return (
         <div>
@@ -18,11 +32,11 @@ const CourseDetailsRightSide = ({ course }) => {
                 <div className=" flex space-x-3 items-center">
                     <div className="avatar">
                         <div className="w-16 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                            <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                            <img src={instructorInfo?.profilePicture} />
                         </div>
                     </div>
                     <div>
-                        <h2 className="text-sm font-extrabold">{selectedInstructor}</h2>
+                        <h2 className="text-sm font-extrabold">{instructorInfo?.name}</h2>
                         <h2 className="text-sm">Instructor, Tech School</h2>
                     </div>
                 </div>

@@ -2,15 +2,18 @@ import { useForm, Controller } from "react-hook-form";
 import useAxiosSecure from "../../../Hooks/useAxios/useAxiosSecure";
 import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 const fetchData = async () => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/instructor`);
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/instructors`);
     return response.json();
 };
 
 const CreateCourse = () => {
     const [axiosSecure] = useAxiosSecure();
     const { register, control, formState: { errors }, handleSubmit, setValue, getValues } = useForm();
+
+    const navigate = useNavigate();
 
     const { data: instructors = [], isLoading } = useQuery({
         queryKey: ["instructors"],
@@ -49,6 +52,10 @@ const CreateCourse = () => {
 
     const handleCreateCourse = (data) => {
         // console.log(data);
+        data.batchNumber = parseInt(data.batchNumber);
+        data.courseDurationInMonths = parseInt(data.courseDurationInMonths);
+        data.courseFee = parseInt(data.courseFee);
+
         const formData = new FormData();
         formData.append("image", data.courseBanner[0]);
 
@@ -59,17 +66,14 @@ const CreateCourse = () => {
             .then(res => res.json())
             .then(imgResponse => {
                 data.courseBanner = imgResponse.data.display_url
-                // const instructorId = data.selectedInstructor.split(" | ")[0];
-                // const instructorName = data.selectedInstructor.split(" | ")[1];
-
-                // const instructor = { instructorId, instructorName };
-                // const courseInfo = { ...data, instructor };
+                data.isPublished = "true";
 
                 axiosSecure.post(`${import.meta.env.VITE_API_URL}/courses`, data)
                     .then(res => {
                         console.log(res);
                         if (res.data.insertedId) {
-                            toast.success("Course created successfully!")
+                            toast.success("Course created successfully!");
+                            navigate("/dashboard/manage-courses");
                         }
                         else {
                             toast.error(res.data.message);

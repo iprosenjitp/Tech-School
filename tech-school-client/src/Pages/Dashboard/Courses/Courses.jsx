@@ -5,7 +5,7 @@ import CourseRow from "./CourseRow";
 const Courses = () => {
     const [axiosSecure] = useAxiosSecure();
 
-    const { data: courses = [] } = useQuery({
+    const { data: courses = [], refetch } = useQuery({
         queryKey: ["courses"],
         queryFn: async () => {
             const res = await axiosSecure.get("/courses");
@@ -22,8 +22,7 @@ const Courses = () => {
                         <tr>
                             <th></th>
                             <th>Course Name</th>
-                            <th>Batch No</th>
-                            <th>Instructor</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -34,6 +33,7 @@ const Courses = () => {
                                     key={course._id}
                                     course={course}
                                     idx={idx}
+                                    refetch={refetch}
                                 ></CourseRow>
                             ))
                         }
